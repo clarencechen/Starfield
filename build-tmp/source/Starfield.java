@@ -39,6 +39,39 @@ public void draw()
 }
 public void keyPressed()
 {
+	switch (key)
+	{
+		case 'a' :
+		{		
+			((OddballParticle)(mol[0])).setColor(51,0,0);
+			break;
+		}
+		case 's' :
+		{		
+			((OddballParticle)(mol[0])).setColor(0,51,0);
+			break;
+		}
+		case 'd' :
+		{		
+			((OddballParticle)(mol[0])).setColor(0,0,51);
+			break;
+		}
+		case 'z' :
+		{		
+			((OddballParticle)(mol[0])).setColor(-51,0,0);
+			break;
+		}
+		case 'x' :
+		{		
+			((OddballParticle)(mol[0])).setColor(0,-51,0);
+			break;
+		}
+		case 'c' :
+		{		
+			((OddballParticle)(mol[0])).setColor(0,0,-51);
+			break;
+		}
+	}
 	if(key == CODED)
 	{
 		switch (keyCode)
@@ -84,7 +117,7 @@ class NormalParticle implements Particle
 	{
 		x = 256;
 		y = 256;
-		col = color((int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256));
+		col = color((int)(Math.random()*6)*51,(int)(Math.random()*6)*51,(int)(Math.random()*6)*51);
 		angle = Math.random()*2*PI;
 		speed = Math.random()*7.5f+0.5f;
 		sz = 4;
@@ -131,7 +164,7 @@ class OddballParticle implements Particle
 	{
 		x = 256;
 		y = 256;
-		col = color((int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256));
+		col = color((int)(Math.random()*6)*51,(int)(Math.random()*6)*51,(int)(Math.random()*6)*51);
 		angle = Math.random()*2*PI;
 		speed = 4;
 		sz = 16;
@@ -148,11 +181,11 @@ class OddballParticle implements Particle
 	}
 	public void bounce()
 	{
-		if(x >= 512 || x < 0)
+		if(x >= 512 -sz/2 || x < 0 +sz/2)
 		{
 			angle = PI -angle;
 		}
-		if(y >= 512 || y < 0)
+		if(y >= 512 -sz/2 || y < 0 +sz/2)
 		{
 			angle = -angle;
 		}
@@ -161,6 +194,10 @@ class OddballParticle implements Particle
 	{
 		sz+=j;
 	}
+	public void setColor(int a, int b, int c)
+	{
+		col = color(red(col) +a,green(col) +b,blue(col) +c);
+	} 
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Starfield" };
