@@ -14,14 +14,15 @@ import java.io.IOException;
 
 public class Starfield extends PApplet {
 
-Particle[] mol = new Particle[257];
+Particle[] mol = new Particle[258];
 public void setup()
 {
 	noStroke();
 	size(512, 512);
 	background(0);
 	mol[0] = new OddballParticle();
-	for(int i = 1;i<mol.length;i++)
+	mol[1] = new JumboParticle();
+	for(int i = 2;i<mol.length;i++)
 	{
 		mol[i] = new NormalParticle();
 	}
@@ -42,32 +43,32 @@ public void keyPressed()
 	switch (key)
 	{
 		case 'a' :
-		{		
+		{
 			((OddballParticle)(mol[0])).setColor(51,0,0);
 			break;
 		}
 		case 's' :
-		{		
+		{
 			((OddballParticle)(mol[0])).setColor(0,51,0);
 			break;
 		}
 		case 'd' :
-		{		
+		{
 			((OddballParticle)(mol[0])).setColor(0,0,51);
 			break;
 		}
 		case 'z' :
-		{		
+		{
 			((OddballParticle)(mol[0])).setColor(-51,0,0);
 			break;
 		}
 		case 'x' :
-		{		
+		{
 			((OddballParticle)(mol[0])).setColor(0,-51,0);
 			break;
 		}
 		case 'c' :
-		{		
+		{
 			((OddballParticle)(mol[0])).setColor(0,0,-51);
 			break;
 		}
@@ -78,28 +79,22 @@ public void keyPressed()
 		{
 			case UP:
 			{	
-				for(int i = 1;i<mol.length;i++)
-				{
-					mol[i].setSize(-1);
-				}
+				((JumboParticle)(mol[1])).setSize(0,-1);
 				break;
 			}
 			case DOWN:
 			{	
-				for(int i = 1;i<mol.length;i++)
-				{
-					mol[i].setSize(1);
-				}
+				((JumboParticle)(mol[1])).setSize(0,1);
 				break;
 			}
 			case LEFT:
 			{	
-				mol[0].setSize(-1);
+				((JumboParticle)(mol[1])).setSize(-1,0);
 				break;
 			}
 			case RIGHT:
 			{	
-				mol[0].setSize(1);
+				((JumboParticle)(mol[1])).setSize(1,0);
 				break;
 			}
 		}
@@ -111,8 +106,8 @@ class NormalParticle implements Particle
 	double y;
 	double angle;
 	double speed;
-	int col;
-	int sz;
+	private int col;
+	private int sz;
 	NormalParticle()
 	{
 		x = 256;
@@ -120,7 +115,7 @@ class NormalParticle implements Particle
 		col = color((int)(Math.random()*6)*51,(int)(Math.random()*6)*51,(int)(Math.random()*6)*51);
 		angle = Math.random()*2*PI;
 		speed = Math.random()*7.5f+0.5f;
-		sz = 4;
+		sz = 2;
 	}
 	public void move()
 	{
@@ -129,6 +124,7 @@ class NormalParticle implements Particle
 	}
 	public void show()
 	{
+		noStroke();
 		fill(col);
 		ellipse((int)(x), (int)(y), sz, sz);
 	}
@@ -140,17 +136,12 @@ class NormalParticle implements Particle
 			y = 256;
 		}
 	}
-	public void setSize(int j)
-	{
-		sz+=j;
-	}
 }
 interface Particle
 {
 	public void move();
 	public void show();
 	public void bounce();
-	public void setSize(int j);
 }
 class OddballParticle implements Particle
 {
@@ -158,8 +149,8 @@ class OddballParticle implements Particle
 	double y;
 	double angle;
 	double speed;
-	int col;
-	int sz;
+	protected int col;
+	protected int sz;
 	OddballParticle()
 	{
 		x = 256;
@@ -176,6 +167,7 @@ class OddballParticle implements Particle
 	}
 	public void show()
 	{
+		stroke(255);
 		fill(col);
 		ellipse((int)(x), (int)(y), sz, sz);
 	}
@@ -190,14 +182,48 @@ class OddballParticle implements Particle
 			angle = -angle;
 		}
 	}
-	public void setSize(int j)
-	{
-		sz+=j;
-	}
 	public void setColor(int a, int b, int c)
 	{
 		col = color(red(col) +a,green(col) +b,blue(col) +c);
-	} 
+	}
+}
+class JumboParticle extends OddballParticle
+{
+	protected int szx;
+	protected int szy;
+	JumboParticle()
+	{
+		x = 256;
+		y = 256;
+		col = color((int)(Math.random()*6)*51,(int)(Math.random()*6)*51,(int)(Math.random()*6)*51);
+		angle = Math.random()*2*PI;
+		speed = 4;
+		sz = 0;
+		szx = 32;
+		szy = 32;
+	}
+	public void show()
+	{
+		noStroke();
+		fill(col);
+		ellipse((int)(x), (int)(y), szx, szy);
+	}
+	public void bounce()
+	{
+		if(x >= 512 -szx/2 || x < 0 +szx/2)
+		{
+			angle = PI -angle;
+		}
+		if(y >= 512 -szy/2 || y < 0 +szy/2)
+		{
+			angle = -angle;
+		}
+	}
+	public void setSize(int j, int k)
+	{
+		szx += 2*j;
+		szy += 2*k;
+	}
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Starfield" };
